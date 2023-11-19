@@ -84,3 +84,19 @@ Rerunning either of those scripts will append data onto the respective tables, b
 * `"replace"` (full load)
 * `"merge"` (incremental updates)
 
+## Incremental loading run (append)
+
+We can incrementally retrieve and ingest records for a dataset if that dataset has a suitable datetime column. The **Declare loading behavior** section shows an example of this, where a `dlt.resource()` decorator is used to define the `write_disposition` and register it with a given `table_name`, and it looks like we indicate the column to use for getting the incremental data to load via the `dlt.sources.incremental()` util (note: I think this mechanism depends on the `base_url` for the API calls to include a sorting param and sort results desc by the incremental datetime column).
+
+This system stores relevant metadata (including the last observed value in that datetime col). You can view that metadata via
+```bash
+dlt pipeline -v github_issues_incremental info
+```
+
+## Incremental loading run (merge)
+
+If we are working with a datasource where prior records can be updated, we will probably want to use the `merge` `write_disposition`. Our dataset will need to provide a suitable datetime column (`updated_at` in the `incremental_load_merge.py` example), and we'll also need to provide the name of the `primary_key` column/field to indicate which fields should be upserted.
+
+Note: As before, we have to carefully craft the base_url for the API call to set the correct order on results.
+
+
