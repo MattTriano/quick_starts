@@ -99,4 +99,15 @@ If we are working with a datasource where prior records can be updated, we will 
 
 Note: As before, we have to carefully craft the base_url for the API call to set the correct order on results.
 
+## Incremental loading with many tables
+
+We can also pass a lambda function in to the decorator's `table_name` kwarg, to unpack the API response into a number of tables.
+
+After running the `incremental_load_multi_table_dispatch.py` script, we can inspect the state of the pipeline as well as the tables created/fed by the pipeline via
+
+```bash
+dlt pipeline -v github_events info
+dlt pipeline github_events trace
+```
+
 
